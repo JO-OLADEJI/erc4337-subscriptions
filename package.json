@@ -5,8 +5,7 @@
   "license": "MIT",
   "scripts": {
     "compile": "npx hardhat compile",
-    "deploy": "npx hardhat run scripts/deploy.ts --network mumbai",
-    "demo": "npx ts-node ./client/index.ts"
+    "deploy": "npx hardhat run scripts/deploy.ts --network mumbai"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
