@@ -1,7 +1,7 @@
 import { ethers, Signer, Wallet } from "ethers";
 import {
   initSmartAccount,
-  // setupPayModuleOnSma,
+  setupPayModuleOnSma,
   // extendSubscriptionByDefaultOperator,
 } from "./actions";
 import { config as dotenvConfig } from "dotenv";
@@ -24,7 +24,7 @@ const main = async (): Promise<void> => {
     // );
 
     const smartAccountV2 = await initSmartAccount(eoaWallet);
-    // await setupPayModuleOnSma(smartAccountV2, eoaWallet);
+    await setupPayModuleOnSma(smartAccountV2, eoaWallet);
     // await extendSubscriptionByDefaultOperator(
     //   smartAccountV2,
     //   getSubHash() ?? "",
