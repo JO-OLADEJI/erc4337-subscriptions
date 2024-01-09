@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "compile": "npx hardhat compile",
-    "deploy": "npx hardhat run scripts/deploy.ts --network mumbai"
+    "deploy": "npx hardhat run scripts/deploy.ts --network mumbai",
+    "demo": "npx ts-node ./client/index.ts"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
@@ -30,6 +31,7 @@
   "dependencies": {
     "@account-abstraction/contracts": "^0.6.0",
     "@biconomy-devx/smart-account-contracts": "^2.0.1",
+    "@openzeppelin/contracts": "4.9.3",
     "dotenv": "^16.3.1"
   }
 }

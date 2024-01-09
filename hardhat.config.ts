@@ -4,7 +4,9 @@ import { config as dotenvConfig } from "dotenv";
 dotenvConfig();
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.17",
+  solidity: {
+    compilers: [{ version: "0.8.17" }, { version: "0.8.20", settings: {} }],
+  },
   networks: {
     hardhat: {},
     mumbai: {

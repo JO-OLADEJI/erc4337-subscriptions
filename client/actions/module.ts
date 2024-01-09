@@ -12,7 +12,7 @@ import {
   logSubHash,
 } from "../utils";
 
-export const setupPayModuleOnSma = async (
+export const setupPayModuleAndInitSub = async (
   smartAccount: BiconomySmartAccountV2,
   eoaWallet: Wallet
 ): Promise<boolean> => {
@@ -28,10 +28,10 @@ export const setupPayModuleOnSma = async (
     const smaEthBalance: BigNumber = await eoaWallet.provider.getBalance(
       await smartAccount.getAccountAddress()
     );
-    const hasSuffifientEth = smaEthBalance.gt(
+    const hasSufficientEth = smaEthBalance.gt(
       getSubscription(mPayModule, mSubRouter).obj.paymentAmount
     );
-    if (!hasSuffifientEth) {
+    if (!hasSufficientEth) {
       const tx = await eoaWallet.sendTransaction({
         to: await smartAccount.getAccountAddress(),
         value: ethers.utils.parseEther("0.02").sub(smaEthBalance),
@@ -39,36 +39,36 @@ export const setupPayModuleOnSma = async (
       await tx.wait();
     }
 
-    // let isModuleEnabled = false;
-    // while (!isModuleEnabled) {
-    //   console.log("Installing PayModule . . .");
-    //   const subscriptionInfo = getSubscription(mPayModule, mSubRouter);
-    //   const subHash: BytesLike = await mPayModule.getSubHash(
-    //     subscriptionInfo.obj
-    //   );
-    //   logSubHash(subHash.toString());
+    let isModuleEnabled = false;
+    while (!isModuleEnabled) {
+      console.log("Installing PayModule . . .");
+      const subscriptionInfo = getSubscription(mPayModule, mSubRouter);
+      const subHash: BytesLike = await mPayModule.getSubHash(
+        subscriptionInfo.obj
+      );
+      logSubHash(subHash.toString());
 
-    //   const userOp: Partial<UserOperation> = await smartAccount.buildUserOp([
-    //     {
-    //       to: await smartAccount.getAccountAddress(),
-    //       data: mSmaContract.interface.encodeFunctionData(
-    //         "setupAndEnableModule",
-    //         [
-    //           addresses.mumbai.RECURRING_PAYMENTS_MODULE,
-    //           subscriptionInfo.calldata,
-    //         ]
-    //       ),
-    //     },
-    //   ]);
-    //   const userOpTx: UserOpReceipt = await (
-    //     await smartAccount.sendUserOp(userOp)
-    //   ).wait();
-    //   logTxReceipt(userOpTx.receipt.transactionHash);
+      const userOp: Partial<UserOperation> = await smartAccount.buildUserOp([
+        {
+          to: await smartAccount.getAccountAddress(),
+          data: mSmaContract.interface.encodeFunctionData(
+            "setupAndEnableModule",
+            [
+              addresses.mumbai.RECURRING_PAYMENTS_MODULE,
+              subscriptionInfo.calldata,
+            ]
+          ),
+        },
+      ]);
+      const userOpTx: UserOpReceipt = await (
+        await smartAccount.sendUserOp(userOp)
+      ).wait();
+      logTxReceipt(userOpTx.receipt.transactionHash);
 
-    //   isModuleEnabled = await mSmaContract.isModuleEnabled(
-    //     addresses.mumbai.RECURRING_PAYMENTS_MODULE
-    //   );
-    // }
+      isModuleEnabled = await mSmaContract.isModuleEnabled(
+        addresses.mumbai.RECURRING_PAYMENTS_MODULE
+      );
+    }
     console.log("PayModule enabled ✅");
     return true;
   } catch (error: unknown) {
