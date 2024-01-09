@@ -39,42 +39,42 @@ export const setupPayModuleOnSma = async (
       await tx.wait();
     }
 
-    let isModuleEnabled = false;
-    while (!isModuleEnabled) {
-      console.log("Installing PayModule . . .");
-      const subscriptionInfo = getSubscription(mPayModule, mSubRouter);
-      const subHash: BytesLike = await mPayModule.getSubHash(
-        subscriptionInfo.obj
-      );
-      logSubHash(subHash.toString());
+    // let isModuleEnabled = false;
+    // while (!isModuleEnabled) {
+    //   console.log("Installing PayModule . . .");
+    //   const subscriptionInfo = getSubscription(mPayModule, mSubRouter);
+    //   const subHash: BytesLike = await mPayModule.getSubHash(
+    //     subscriptionInfo.obj
+    //   );
+    //   logSubHash(subHash.toString());
 
-      const userOp: Partial<UserOperation> = await smartAccount.buildUserOp([
-        {
-          to: await smartAccount.getAccountAddress(),
-          data: mSmaContract.interface.encodeFunctionData(
-            "setupAndEnableModule",
-            [
-              addresses.mumbai.RECURRING_PAYMENTS_MODULE,
-              subscriptionInfo.calldata,
-            ]
-          ),
-        },
-      ]);
-      const userOpTx: UserOpReceipt = await (
-        await smartAccount.sendUserOp(userOp)
-      ).wait();
-      logTxReceipt(userOpTx.receipt.transactionHash);
+    //   const userOp: Partial<UserOperation> = await smartAccount.buildUserOp([
+    //     {
+    //       to: await smartAccount.getAccountAddress(),
+    //       data: mSmaContract.interface.encodeFunctionData(
+    //         "setupAndEnableModule",
+    //         [
+    //           addresses.mumbai.RECURRING_PAYMENTS_MODULE,
+    //           subscriptionInfo.calldata,
+    //         ]
+    //       ),
+    //     },
+    //   ]);
+    //   const userOpTx: UserOpReceipt = await (
+    //     await smartAccount.sendUserOp(userOp)
+    //   ).wait();
+    //   logTxReceipt(userOpTx.receipt.transactionHash);
 
-      isModuleEnabled = await mSmaContract.isModuleEnabled(
-        addresses.mumbai.RECURRING_PAYMENTS_MODULE
-      );
-    }
+    //   isModuleEnabled = await mSmaContract.isModuleEnabled(
+    //     addresses.mumbai.RECURRING_PAYMENTS_MODULE
+    //   );
+    // }
     console.log("PayModule enabled ✅");
     return true;
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error("Error building user operation:", error.message);
     }
+    return false;
   }
-  return false;
 };
